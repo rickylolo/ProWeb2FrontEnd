@@ -18,10 +18,10 @@ import { Edit, Delete } from '@mui/icons-material'
 
 import { styled } from '@mui/system'
 
-const Products = () => {
+function Categories() {
   const Modales = styled('div')({
     position: 'absolute',
-    width: 420,
+    width: 400,
     backgroundColor: 'white',
     borderRadius: '1rem',
     boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.2)',
@@ -36,7 +36,7 @@ const Products = () => {
     cursor: 'pointer',
   })
 
-  const baseUrl = 'http://localhost:3001/api/product'
+  const baseUrl = 'http://localhost:3001/api/category'
 
   const [data, setData] = useState([])
   const [modalInsertar, setModalInsertar] = useState(false)
@@ -46,9 +46,6 @@ const Products = () => {
   const [consolaSeleccionada, setConsolaSeleccionada] = useState({
     name: '',
     description: '',
-    price: '',
-    image: '',
-    stock: '',
   })
 
   const handleChange = (e) => {
@@ -57,6 +54,7 @@ const Products = () => {
       ...prevState,
       [name]: value,
     }))
+
     console.log(consolaSeleccionada)
   }
 
@@ -68,8 +66,8 @@ const Products = () => {
   }
 
   const peticionPost = async () => {
-    await axios.post(baseUrl, consolaSeleccionada).then((response) => {
-      setData(data.concat(response.data))
+    await axios.post(baseUrl, consolaSeleccionada).then((res) => {
+      setData(data.concat(res.data))
       abrirCerrarModalInsertar()
     })
   }
@@ -77,15 +75,12 @@ const Products = () => {
   const peticionPut = async () => {
     await axios
       .put(baseUrl + '/' + consolaSeleccionada._id, consolaSeleccionada)
-      .then((response) => {
+      .then((res) => {
         var dataNueva = data
         dataNueva.map((consola) => {
           if (consolaSeleccionada._id === consola._id) {
             consola.name = consolaSeleccionada.name
             consola.description = consolaSeleccionada.description
-            consola.price = consolaSeleccionada.price
-            consola.image = consolaSeleccionada.image
-            consola.stock = consolaSeleccionada.stock
           }
         })
         setData(dataNueva)
@@ -128,7 +123,7 @@ const Products = () => {
   const bodyInsertar = (
     <Box>
       <Modales>
-        <h3>Agregar Nuevo Producto</h3>
+        <h3>Agregar Nueva Categoría</h3>
 
         <TextField
           fullWidth
@@ -141,33 +136,8 @@ const Products = () => {
         <TextField
           fullWidth
           margin="dense"
-          multiline
-          rows={6}
           name="description"
           label="Descripción"
-          onChange={handleChange}
-        />
-
-        <TextField
-          fullWidth
-          margin="dense"
-          name="price"
-          label="Precio"
-          onChange={handleChange}
-        />
-
-        <TextField
-          fullWidth
-          margin="dense"
-          name="image"
-          label="Imagen"
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          name="stock"
-          label="Stock"
           onChange={handleChange}
         />
 
@@ -205,37 +175,9 @@ const Products = () => {
           fullWidth
           margin="dense"
           name="description"
-          multiline
-          rows={6}
           label="Descripción"
           onChange={handleChange}
           value={consolaSeleccionada && consolaSeleccionada.description}
-        />
-
-        <TextField
-          fullWidth
-          margin="dense"
-          name="price"
-          label="Precio"
-          onChange={handleChange}
-          value={consolaSeleccionada && consolaSeleccionada.price}
-        />
-
-        <TextField
-          fullWidth
-          margin="dense"
-          name="image"
-          label="Imagen"
-          onChange={handleChange}
-          value={consolaSeleccionada && consolaSeleccionada.image}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          name="stock"
-          label="Stock"
-          onChange={handleChange}
-          value={consolaSeleccionada && consolaSeleccionada.stock}
         />
 
         <Box
@@ -259,7 +201,7 @@ const Products = () => {
     <Box>
       <Modales>
         <p>
-          ¿Estás seguro que deseas eliminar este producto:{' '}
+          ¿Estás seguro que deseas eliminar esta categoría:{' '}
           <b>{consolaSeleccionada && consolaSeleccionada.name}</b> ?{' '}
         </p>
         <div align="right">
@@ -273,7 +215,7 @@ const Products = () => {
   )
 
   return (
-    <div className="Products">
+    <div className="Categories">
       <br />
       <Button onClick={() => abrirCerrarModalInsertar()}>Insertar</Button>
       <br />
@@ -284,10 +226,7 @@ const Products = () => {
             <TableRow>
               <TableCell>Nombre</TableCell>
               <TableCell>Descripción</TableCell>
-              <TableCell>Precio</TableCell>
-              <TableCell>Imagen</TableCell>
-              <TableCell>Stock</TableCell>
-              <TableCell>Reseñas</TableCell>
+              <TableCell>Productos</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -297,10 +236,7 @@ const Products = () => {
               <TableRow key={consola._id}>
                 <TableCell>{consola.name}</TableCell>
                 <TableCell>{consola.description}</TableCell>
-                <TableCell>{consola.price}</TableCell>
-                <TableCell>{consola.image}</TableCell>
-                <TableCell>{consola.stock}</TableCell>
-                <TableCell>{consola.reviews.length}</TableCell>
+                <TableCell>{consola.products.length}</TableCell>
                 <TableCell>
                   <Iconos>
                     <Edit
@@ -333,4 +269,4 @@ const Products = () => {
   )
 }
 
-export default Products
+export default Categories
