@@ -18,26 +18,26 @@ import { Edit, Delete } from '@mui/icons-material'
 
 import { styled } from '@mui/system'
 
-const Modales = styled('div')({
-  position: 'absolute',
-  width: 400,
-  backgroundColor: 'white',
-  borderRadius: '1rem',
-  boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.2)',
-  padding: '16px 32px 24px',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  justifyContent: 'center',
-})
+const Products = () => {
+  const Modales = styled('div')({
+    position: 'absolute',
+    width: 400,
+    backgroundColor: 'white',
+    borderRadius: '1rem',
+    boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.2)',
+    padding: '16px 32px 24px',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    justifyContent: 'center',
+  })
 
-const Iconos = styled('div')({
-  cursor: 'pointer',
-})
+  const Iconos = styled('div')({
+    cursor: 'pointer',
+  })
 
-const baseUrl = 'http://localhost:3001/api/product'
+  const baseUrl = 'http://localhost:3001/api/product'
 
-function App() {
   const [data, setData] = useState([])
   const [modalInsertar, setModalInsertar] = useState(false)
   const [modalEditar, setModalEditar] = useState(false)
@@ -266,7 +266,7 @@ function App() {
   )
 
   return (
-    <div className="App">
+    <div className="Products">
       <br />
       <Button onClick={() => abrirCerrarModalInsertar()}>Insertar</Button>
       <br />
@@ -326,4 +326,4 @@ function App() {
   )
 }
 
-export default App
+export default Products
