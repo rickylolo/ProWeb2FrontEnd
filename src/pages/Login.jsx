@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -9,9 +9,15 @@ import Link from '@mui/material/Link'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
+import Alert from '@mui/material/Alert'
+import IconButton from '@mui/material/IconButton'
+import Collapse from '@mui/material/Collapse'
+import CloseIcon from '@mui/icons-material/Close'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import axios from 'axios'
+import { redirect } from 'react-router-dom'
 
 function Copyright(props) {
   return (
@@ -34,13 +40,52 @@ function Copyright(props) {
 const defaultTheme = createTheme()
 
 export default function SignInSide() {
+  const [data, setData] = useState([])
+  const [open, setOpen] = React.useState(false)
+  const [errorText, setErrorText] = useState('')
+
+  function objectFromFormData(formData) {
+    const obj = {}
+    formData.forEach((value, key) => {
+      obj[key] = value
+    })
+    return obj
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
+    const formData = new FormData(event.currentTarget)
+    const data = objectFromFormData(formData)
+    requestLogin(data)
+  }
+
+  const requestLogin = async (form) => {
+    try {
+      const baseUrl = 'http://localhost:3001/api/user/login'
+      const headers = { 'Content-Type': 'application/json' }
+
+      const response = await axios.post(baseUrl, JSON.stringify(form), {
+        headers,
+      })
+
+      setData(response.data)
+      console.log(data)
+
+      if (response.data.JSONWToken) {
+        const token = response.data.JSONWToken
+        window.location.href = `/Home/?token=${token}`
+      }
+    } catch (error) {
+      if (error.response) {
+        setErrorText(error.response.data)
+        setOpen(true)
+      } else if (error.request) {
+        console.log(error.request)
+      } else {
+        console.log('Error', error.message)
+      }
+      console.log(error.config) // Mostrar la configuración de la solicitud en la consola o realizar cualquier otra acción necesaria
+    }
   }
 
   return (
@@ -129,6 +174,27 @@ export default function SignInSide() {
               </Grid>
               <Copyright sx={{ mt: 5 }} />
             </Box>
+          </Box>
+          <Box sx={{ width: '100%' }}>
+            <Collapse in={open}>
+              <Alert
+                severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpen(false)
+                    }}>
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                sx={{ mb: 2 }}>
+                {' '}
+                {errorText}
+              </Alert>
+            </Collapse>
           </Box>
         </Grid>
       </Grid>
