@@ -11,11 +11,10 @@ import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Badge from '@mui/material/Badge'
 import Container from '@mui/material/Container'
-import Link from '@mui/material/Link'
 import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import { mainListItems, secondaryListItems } from './listItems'
+import { mainListItems } from './listItems'
 import MainDashboard from './MainDashboard'
 import Products from './Products'
 import Categories from './Categories'
@@ -27,9 +26,7 @@ function Copyright(props) {
       align="center"
       {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
+
       {new Date().getFullYear()}
       {'.'}
     </Typography>
@@ -139,11 +136,7 @@ export default function Dashboard() {
             </IconButton>
           </Toolbar>
           <Divider />
-          <List component="nav">
-            {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
-          </List>
+          <List component="nav">{mainListItems}</List>
         </Drawer>
         <Box
           component="main"
