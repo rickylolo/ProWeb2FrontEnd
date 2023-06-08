@@ -37,15 +37,24 @@ function Categories() {
 
   const baseUrl = 'http://localhost:3001/api/category'
 
-  const [data, setData] = useState([])
+  const [dataCategories, setData] = useState([])
   const [modalInsertar, setModalInsertar] = useState(false)
   const [modalEditar, setModalEditar] = useState(false)
   const [modalEliminar, setModalEliminar] = useState(false)
 
-  const [consolaSeleccionada, setConsolaSeleccionada] = useState({
+  const initialState = {
     name: '',
     description: '',
-  })
+  }
+
+  const [consolaSeleccionada, setConsolaSeleccionada] = useState(initialState)
+
+  const handleSubmitRegister = (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const data = objectFromFormData(formData)
+    peticionPost(data)
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -53,8 +62,14 @@ function Categories() {
       ...prevState,
       [name]: value,
     }))
+  }
 
-    console.log(consolaSeleccionada)
+  function objectFromFormData(formData) {
+    const obj = {}
+    formData.forEach((value, key) => {
+      obj[key] = value
+    })
+    return obj
   }
 
   const requestGet = async () => {
@@ -64,23 +79,40 @@ function Categories() {
     })
   }
 
-  const peticionPost = async () => {
-    await axios.post(baseUrl, consolaSeleccionada).then((res) => {
-      setData(data.concat(res.data))
+  const peticionPost = async (form) => {
+    try {
+      const baseUrl = 'http://localhost:3001/api/category'
+      const headers = { 'Content-Type': 'application/json' }
+
+      await axios.post(baseUrl, JSON.stringify(form), {
+        headers,
+      })
+      requestGet()
       abrirCerrarModalInsertar()
-    })
+    } catch (error) {
+      if (error.response) {
+        //setErrorText(error.response.data)
+        //setOpen(true)
+      } else if (error.request) {
+        console.log(error.request)
+      } else {
+        console.log('Error', error.message)
+      }
+      console.log(error.config)
+    }
   }
 
   const peticionPut = async () => {
     await axios
       .put(baseUrl + '/' + consolaSeleccionada._id, consolaSeleccionada)
       .then((res) => {
-        var dataNueva = data
-        dataNueva.map((consola) => {
+        var dataNueva = dataCategories
+        dataNueva = dataNueva.map((consola) => {
           if (consolaSeleccionada._id === consola._id) {
             consola.name = consolaSeleccionada.name
             consola.description = consolaSeleccionada.description
           }
+          return consola
         })
         setData(dataNueva)
         abrirCerrarModalEditar()
@@ -89,7 +121,11 @@ function Categories() {
 
   const peticionDelete = async () => {
     await axios.delete(baseUrl + '/' + consolaSeleccionada._id).then((res) => {
-      setData(data.filter((consola) => consola._id !== consolaSeleccionada._id))
+      setData(
+        dataCategories.filter(
+          (consola) => consola._id !== consolaSeleccionada._id
+        )
+      )
       abrirCerrarModalEliminar()
     })
   }
@@ -120,24 +156,24 @@ function Categories() {
   }, [])
 
   const bodyInsertar = (
-    <Box>
+    <Box component="form" onSubmit={handleSubmitRegister}>
       <Modales>
         <h3>Agregar Nueva Categoría</h3>
 
         <TextField
           fullWidth
+          required
           margin="dense"
           name="name"
           label="Nombre"
-          onChange={handleChange}
         />
 
         <TextField
           fullWidth
+          required
           margin="dense"
           name="description"
           label="Descripción"
-          onChange={handleChange}
         />
 
         <Box
@@ -146,7 +182,7 @@ function Categories() {
             justifyContent: 'flex-end',
             paddingTop: '20px',
           }}>
-          <Button color="success" onClick={() => peticionPost()}>
+          <Button color="success" type="submit">
             Insertar
           </Button>
           <Button color="inherit" onClick={() => abrirCerrarModalInsertar()}>
@@ -160,7 +196,7 @@ function Categories() {
   const bodyEditar = (
     <Box>
       <Modales>
-        <h3>Editar Producto</h3>
+        <h3>Editar Categoría</h3>
         <TextField
           fullWidth
           margin="dense"
@@ -219,7 +255,7 @@ function Categories() {
       <Button onClick={() => abrirCerrarModalInsertar()}>Insertar</Button>
       <br />
       <br />
-      <TableContainer sx={{ boxShadow: 3, mx: 'auto', width: '85%' }}>
+      <TableContainer sx={{ boxShadow: 3, mx: 'auto' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -231,7 +267,7 @@ function Categories() {
           </TableHead>
 
           <TableBody>
-            {data.map((consola) => (
+            {dataCategories.map((consola) => (
               <TableRow key={consola._id}>
                 <TableCell>{consola.name}</TableCell>
                 <TableCell>{consola.description}</TableCell>

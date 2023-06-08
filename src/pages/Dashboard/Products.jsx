@@ -72,13 +72,11 @@ const Products = () => {
       abrirCerrarModalInsertar()
     })
   }
-
   const peticionPut = async () => {
     await axios
       .put(baseUrl + '/' + consolaSeleccionada._id, consolaSeleccionada)
       .then((response) => {
-        var dataNueva = data
-        dataNueva.map((consola) => {
+        var dataNueva = data.map((consola) => {
           if (consolaSeleccionada._id === consola._id) {
             consola.name = consolaSeleccionada.name
             consola.description = consolaSeleccionada.description
@@ -86,6 +84,7 @@ const Products = () => {
             consola.image = consolaSeleccionada.image
             consola.stock = consolaSeleccionada.stock
           }
+          return consola // Devuelve el objeto modificado o sin modificar
         })
         setData(dataNueva)
         abrirCerrarModalEditar()
@@ -277,7 +276,7 @@ const Products = () => {
       <Button onClick={() => abrirCerrarModalInsertar()}>Insertar</Button>
       <br />
       <br />
-      <TableContainer sx={{ boxShadow: 3, mx: 'auto', width: '85%' }}>
+      <TableContainer sx={{ boxShadow: 3, mx: 'auto' }}>
         <Table>
           <TableHead>
             <TableRow>

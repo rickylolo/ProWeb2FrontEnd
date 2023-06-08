@@ -9,7 +9,6 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import AddressForm from './AddressForm'
@@ -20,16 +19,14 @@ function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
+
       {new Date().getFullYear()}
       {'.'}
     </Typography>
   )
 }
 
-const steps = ['Shipping address', 'Payment details', 'Review your order']
+const steps = ['Dirección de envío', 'Datos de pago', 'Revise su pedido']
 
 function getStepContent(step) {
   switch (step) {
@@ -71,7 +68,7 @@ export default function Checkout() {
         }}>
         <Toolbar>
           <Typography variant="h6" color="inherit" noWrap>
-            Company name
+            Nombre de la compañia
           </Typography>
         </Toolbar>
       </AppBar>
@@ -92,12 +89,12 @@ export default function Checkout() {
           {activeStep === steps.length ? (
             <React.Fragment>
               <Typography variant="h5" gutterBottom>
-                Thank you for your order.
+                Gracias por tu orden.
               </Typography>
               <Typography variant="subtitle1">
-                Your order number is #2001539. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
+                Su número de pedido es #2001539. Le hemos enviado por correo
+                electrónico confirmación del pedido, y le enviaremos una
+                actualización cuando su pedido ha enviado.
               </Typography>
             </React.Fragment>
           ) : (
@@ -106,7 +103,7 @@ export default function Checkout() {
               <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 {activeStep !== 0 && (
                   <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                    Back
+                    Regresar
                   </Button>
                 )}
 
@@ -114,7 +111,9 @@ export default function Checkout() {
                   variant="contained"
                   onClick={handleNext}
                   sx={{ mt: 3, ml: 1 }}>
-                  {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                  {activeStep === steps.length - 1
+                    ? 'Realizar Pedido'
+                    : 'Siguiente'}
                 </Button>
               </Box>
             </React.Fragment>

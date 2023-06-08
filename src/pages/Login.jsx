@@ -80,7 +80,7 @@ export default function SignInSide() {
       } else {
         console.log('Error', error.message)
       }
-      console.log(error.config) // Mostrar la configuración de la solicitud en la consola o realizar cualquier otra acción necesaria
+      console.log(error.config)
     }
   }
 

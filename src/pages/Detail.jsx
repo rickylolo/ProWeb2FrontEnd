@@ -25,14 +25,13 @@ const products = [
     desc: 'Best thing of all',
     price: '$14.11',
   },
-  { name: 'Shipping', desc: '', price: 'Free' },
 ]
 
 export default function Review() {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Resumen del pedido
+        Carrito
       </Typography>
       <List disablePadding>
         {products.map((product) => (

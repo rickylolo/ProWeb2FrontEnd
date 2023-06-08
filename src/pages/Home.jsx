@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import CssBaseline from '@mui/material/CssBaseline'
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
+import PageviewIcon from '@mui/icons-material/Pageview'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Link from '@mui/material/Link'
@@ -20,6 +20,7 @@ import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
+//import Detail from './Detail'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import axios from 'axios'
 
@@ -237,7 +238,9 @@ export default function Home() {
                     <Typography>{card.description}</Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Edit</Button>
+                    <Button size="small">
+                      <PageviewIcon></PageviewIcon>
+                    </Button>
                   </CardActions>
                 </Card>
               </Grid>
