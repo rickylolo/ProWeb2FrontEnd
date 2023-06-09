@@ -1,11 +1,13 @@
 import * as React from 'react'
 import Avatar from '@mui/material/Avatar'
+import axios from 'axios'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import Link from '@mui/material/Link'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import Input from '@mui/material/Input'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
@@ -31,13 +33,64 @@ function Copyright(props) {
 const defaultTheme = createTheme()
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    const formData = new FormData(event.currentTarget)
+    const data = objectFromFormData(formData)
+
+    const avatarFile = formData.get('avatar')
+    if (!avatarFile) {
+      console.log('Falta cargar la imagen')
+      return
+    }
+
+    const base64 = await convertBase64(avatarFile)
+    data.avatar = base64
+    data.userType = 2
+    console.log(data)
+    peticionPost(data)
+  }
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+
+      fileReader.onload = () => {
+        resolve(fileReader.result)
+      }
+
+      fileReader.onerror = (error) => {
+        reject(error)
+      }
     })
+  }
+
+  function objectFromFormData(formData) {
+    const obj = {}
+    formData.forEach((value, key) => {
+      obj[key] = value
+    })
+    return obj
+  }
+
+  const peticionPost = async (form) => {
+    try {
+      const baseUrl = 'http://localhost:3001/api/user'
+      const headers = { 'Content-Type': 'application/json' }
+
+      await axios.post(baseUrl, JSON.stringify(form), {
+        headers,
+      })
+    } catch (error) {
+      if (error.response) {
+      } else if (error.request) {
+        console.log(error.request)
+      } else {
+        console.log('Error', error.message)
+      }
+      console.log(error.config)
+    }
   }
 
   return (
@@ -57,11 +110,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Regístrate
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -105,7 +154,17 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                <Input
+                  required
+                  type="file"
+                  accept="image/jpeg"
+                  name="avatar"
+                  id="avatar"
+                  inputProps={{ 'aria-label': 'Avatar' }}
+                  fullWidth
+                />
+              </Grid>
             </Grid>
             <Button
               type="submit"
