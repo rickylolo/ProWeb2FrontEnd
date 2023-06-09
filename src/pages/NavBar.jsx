@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
 import Detail from './Detail'
+import axios from 'axios'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -61,19 +62,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    right: -3,
-    top: 18,
-    border: `1px solid ${theme.palette.background.paper}`,
-    padding: '0 4px',
-  },
-}))
-
 export default function NavBar() {
   const pages = ['Listas', 'Reseñas']
   const settings = ['Perfil', 'Dashboard', 'Cerrar Sesión']
 
+  const [dataUser, setData] = useState([])
+  const requestGet = async () => {
+    // Obtener los parámetros de consulta de la URL
+    const urlParams = new URLSearchParams(window.location.search)
+    // Obtener el valor del token
+    const token = urlParams.get('token')
+    // Obtener el valor del userId
+    const userId = urlParams.get('userId')
+
+    const baseUrl = 'http://localhost:3001/api/user'
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+
+    axios
+      .get(baseUrl + '/' + userId, config)
+      .then((res) => {
+        setData(res.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [anchorElCart, setAnchorElCart] = React.useState(null)
@@ -99,6 +117,14 @@ export default function NavBar() {
   const handleCloseUserCart = () => {
     setAnchorElCart(null)
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await requestGet()
+    }
+
+    fetchData()
+  }, [])
 
   const handleMenuItemClick = (page) => {
     if (page === 'Listas') {
@@ -242,9 +268,13 @@ export default function NavBar() {
                 onClick={handleOpenUserCart}
                 aria-label="cart"
                 sx={{ marginRight: 4 }}>
-                <StyledBadge badgeContent={4} color="secondary">
+                <Badge
+                  badgeContent={
+                    dataUser ? dataUser.cart?.list?.products.length : 0
+                  }
+                  color="secondary">
                   <ShoppingCartIcon />
-                </StyledBadge>
+                </Badge>
               </IconButton>
             </Tooltip>
             <Menu
@@ -267,14 +297,14 @@ export default function NavBar() {
               }}
               open={Boolean(anchorElCart)}
               onClose={handleCloseUserCart}>
-              <Detail />
+              <Detail data={dataUser.cart?.list} setData={setData} />
             </Menu>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" src={dataUser.avatar} />
               </IconButton>
             </Tooltip>
             <Menu

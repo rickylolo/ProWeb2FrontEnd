@@ -69,7 +69,11 @@ export default function SignInSide() {
 
       if (response.data.JSONWToken) {
         const token = response.data.JSONWToken
-        window.location.href = `/Home/?token=${token}`
+        const userId = response.data.userId
+
+        window.location.href = `/Home/?token=${encodeURIComponent(
+          token
+        )}&userId=${encodeURIComponent(userId)}`
       }
     } catch (error) {
       if (error.response) {

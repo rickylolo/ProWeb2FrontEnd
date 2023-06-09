@@ -74,7 +74,6 @@ function Categories() {
 
   const requestGet = async () => {
     await axios.get(baseUrl).then((res) => {
-      console.log(res.data)
       setData(res.data)
     })
   }

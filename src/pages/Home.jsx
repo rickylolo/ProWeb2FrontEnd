@@ -45,9 +45,19 @@ export default function Home() {
 
   const requestGetProducts = async () => {
     await axios.get(baseUrl).then((res) => {
-      console.log(res.data)
       setData(res.data)
     })
+  }
+
+  const handleAddToCart = async (id) => {
+    // Obtener la URL actual
+    const urlParams = new URLSearchParams(window.location.search)
+
+    // Obtener el valor del parámetro "userId"
+    const userId = urlParams.get('userId')
+
+    console.log(userId)
+    console.log(id)
   }
 
   return (
@@ -81,7 +91,12 @@ export default function Home() {
                     </Typography>
                     <Typography>{card.description}</Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions sx={{ paddingLeft: 4 }}>
+                    <Button
+                      size="small"
+                      onClick={() => handleAddToCart(card._id)}>
+                      Añadir al carrito
+                    </Button>
                     <Button size="small">
                       <PageviewIcon></PageviewIcon>
                     </Button>
