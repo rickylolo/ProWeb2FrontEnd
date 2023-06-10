@@ -169,6 +169,8 @@ function Categories() {
 
         <TextField
           fullWidth
+          multiline
+          rows={6}
           required
           margin="dense"
           name="description"
@@ -207,6 +209,8 @@ function Categories() {
 
         <TextField
           fullWidth
+          multiline
+          rows={6}
           margin="dense"
           name="description"
           label="Descripción"
@@ -251,7 +255,9 @@ function Categories() {
   return (
     <div className="Categories">
       <br />
-      <Button onClick={() => abrirCerrarModalInsertar()}>Insertar</Button>
+      <Button variant="contained" onClick={() => abrirCerrarModalInsertar()}>
+        Insertar
+      </Button>
       <br />
       <br />
       <TableContainer sx={{ boxShadow: 3, mx: 'auto' }}>

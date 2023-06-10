@@ -32,8 +32,41 @@ function Copyright() {
 const defaultTheme = createTheme()
 
 export default function Home() {
-  const baseUrl = 'http://localhost:3001/api/product'
-  const [dataProducts, setData] = useState([])
+  const [dataProducts, setDataProducts] = useState([])
+  const [dataUser, setDataUser] = useState([])
+
+  const requestGet = async () => {
+    // Obtener los parámetros de consulta de la URL
+    const urlParams = new URLSearchParams(window.location.search)
+    // Obtener el valor del token
+    const token = urlParams.get('token')
+    // Obtener el valor del userId
+    const userId = urlParams.get('userId')
+
+    const baseUrl = 'http://localhost:3001/api/user'
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+
+    axios
+      .get(baseUrl + '/' + userId, config)
+      .then((res) => {
+        setDataUser(res.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+  useEffect(() => {
+    const fetchData = async () => {
+      await requestGet()
+    }
+
+    fetchData()
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,20 +77,40 @@ export default function Home() {
   }, [])
 
   const requestGetProducts = async () => {
+    const baseUrl = 'http://localhost:3001/api/product'
     await axios.get(baseUrl).then((res) => {
-      setData(res.data)
+      setDataProducts(res.data)
     })
   }
 
-  const handleAddToCart = async (id) => {
+  const handleAddToCart = async (idProducto) => {
+    const baseUrl = 'http://localhost:3001/api/user/addCart'
     // Obtener la URL actual
     const urlParams = new URLSearchParams(window.location.search)
 
     // Obtener el valor del parámetro "userId"
     const userId = urlParams.get('userId')
 
-    console.log(userId)
-    console.log(id)
+    const requestData = {
+      productId: idProducto,
+      userId: userId,
+    }
+
+    try {
+      const response = await axios.post(baseUrl, requestData)
+      console.log('Respuesta de la solicitud:', response.data)
+      setDataUser((prevData) => {
+        return {
+          ...prevData,
+          cart: {
+            ...prevData.cart,
+            list: response.data,
+          },
+        }
+      })
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error)
+    }
   }
 
   return (
@@ -65,7 +118,7 @@ export default function Home() {
       <CssBaseline />
       <main>
         {/* Hero unit */}
-        <NavBar />
+        <NavBar dataUser={dataUser} setData={setDataUser} />
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>

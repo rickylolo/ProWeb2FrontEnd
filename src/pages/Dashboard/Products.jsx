@@ -9,8 +9,11 @@ import {
   TableRow,
   Modal,
   Button,
+  Card,
+  CardMedia,
   TextField,
   Box,
+  Input,
 } from '@mui/material'
 
 import { Edit, Delete } from '@mui/icons-material'
@@ -56,18 +59,77 @@ const Products = () => {
       ...prevState,
       [name]: value,
     }))
-    console.log(consolaSeleccionada)
+  }
+
+  const handleSubmitRegister = async (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const data = objectFromFormData(formData)
+
+    const imageFile = formData.get('image')
+    if (!imageFile) {
+      console.log('Falta cargar la imagen')
+      return
+    }
+    const base64 = await convertBase64(imageFile)
+    data.image = base64
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const userId = urlParams.get('userId')
+    data.user = userId
+    peticionPost(data)
+  }
+
+  const handleSubmitEdit = async (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const data = objectFromFormData(formData)
+
+    const imageFile = formData.get('image')
+    if (!imageFile) {
+      console.log('Falta cargar la imagen')
+      return
+    }
+    const base64 = await convertBase64(imageFile)
+    data.image = base64
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const userId = urlParams.get('userId')
+    data.user = userId
+    peticionPut(data)
+  }
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+
+      fileReader.onload = () => {
+        resolve(fileReader.result)
+      }
+
+      fileReader.onerror = (error) => {
+        reject(error)
+      }
+    })
+  }
+
+  function objectFromFormData(formData) {
+    const obj = {}
+    formData.forEach((value, key) => {
+      obj[key] = value
+    })
+    return obj
   }
 
   const requestGet = async () => {
     await axios.get(baseUrl).then((res) => {
-      console.log(res.data)
       setData(res.data)
     })
   }
 
-  const peticionPost = async () => {
-    await axios.post(baseUrl, consolaSeleccionada).then((response) => {
+  const peticionPost = async (form) => {
+    await axios.post(baseUrl, form).then((response) => {
       setData(data.concat(response.data))
       abrirCerrarModalInsertar()
     })
@@ -124,49 +186,54 @@ const Products = () => {
   }, [])
 
   const bodyInsertar = (
-    <Box>
+    <Box component="form" onSubmit={handleSubmitRegister}>
       <Modales>
         <h3>Agregar Nuevo Producto</h3>
 
         <TextField
+          required
           fullWidth
           margin="dense"
           name="name"
           label="Nombre"
-          onChange={handleChange}
         />
 
         <TextField
           fullWidth
+          required
           margin="dense"
           multiline
           rows={6}
           name="description"
           label="Descripción"
-          onChange={handleChange}
         />
 
         <TextField
+          required
           fullWidth
+          type="number"
           margin="dense"
           name="price"
           label="Precio"
-          onChange={handleChange}
         />
 
-        <TextField
-          fullWidth
+        <Input
+          required
+          type="file"
           margin="dense"
+          accept="image/jpeg"
           name="image"
-          label="Imagen"
-          onChange={handleChange}
+          id="image"
+          inputProps={{ 'aria-label': 'Imagen' }}
+          fullWidth
         />
         <TextField
+          required
           fullWidth
+          type="number"
           margin="dense"
           name="stock"
           label="Stock"
-          onChange={handleChange}
         />
 
         <Box
@@ -175,7 +242,7 @@ const Products = () => {
             justifyContent: 'flex-end',
             paddingTop: '20px',
           }}>
-          <Button color="success" onClick={() => peticionPost()}>
+          <Button color="success" type="submit">
             Insertar
           </Button>
           <Button color="inherit" onClick={() => abrirCerrarModalInsertar()}>
@@ -187,52 +254,64 @@ const Products = () => {
   )
 
   const bodyEditar = (
-    <Box>
+    <Box component="form" onSubmit={handleSubmitEdit}>
       <Modales>
         <h3>Editar Producto</h3>
+        <Card sx={{ maxWidth: 345, maxHeight: 200 }}>
+          <CardMedia
+            component="img"
+            alt="Product Image"
+            image={consolaSeleccionada.image}
+            sx={{ objectFit: 'cover' }}
+          />
+        </Card>
+
         <TextField
+          required
           fullWidth
           margin="dense"
           name="name"
           label="Nombre"
-          onChange={handleChange}
           value={consolaSeleccionada && consolaSeleccionada.name}
         />
 
         <TextField
           fullWidth
+          required
           margin="dense"
-          name="description"
           multiline
-          rows={6}
+          rows={4}
+          name="description"
           label="Descripción"
-          onChange={handleChange}
           value={consolaSeleccionada && consolaSeleccionada.description}
         />
 
         <TextField
+          required
           fullWidth
           margin="dense"
           name="price"
           label="Precio"
-          onChange={handleChange}
           value={consolaSeleccionada && consolaSeleccionada.price}
         />
 
-        <TextField
-          fullWidth
+        <Input
+          required
+          type="file"
           margin="dense"
+          accept="image/jpeg"
           name="image"
-          label="Imagen"
-          onChange={handleChange}
-          value={consolaSeleccionada && consolaSeleccionada.image}
+          id="image"
+          inputProps={{ 'aria-label': 'Imagen' }}
+          fullWidth
         />
+
         <TextField
+          required
           fullWidth
           margin="dense"
           name="stock"
           label="Stock"
-          onChange={handleChange}
           value={consolaSeleccionada && consolaSeleccionada.stock}
         />
 
@@ -273,7 +352,9 @@ const Products = () => {
   return (
     <div className="Products">
       <br />
-      <Button onClick={() => abrirCerrarModalInsertar()}>Insertar</Button>
+      <Button variant="contained" onClick={() => abrirCerrarModalInsertar()}>
+        Insertar
+      </Button>
       <br />
       <br />
       <TableContainer sx={{ boxShadow: 3, mx: 'auto' }}>
@@ -281,7 +362,15 @@ const Products = () => {
           <TableHead>
             <TableRow>
               <TableCell>Nombre</TableCell>
-              <TableCell>Descripción</TableCell>
+              <TableCell
+                sx={{
+                  width: '175px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  wordWrap: 'break-word', // Utilizamos 'break-word' en lugar de 'nowrap'
+                }}>
+                Descripción
+              </TableCell>
               <TableCell>Precio</TableCell>
               <TableCell>Imagen</TableCell>
               <TableCell>Stock</TableCell>
@@ -295,8 +384,19 @@ const Products = () => {
               <TableRow key={consola._id}>
                 <TableCell>{consola.name}</TableCell>
                 <TableCell>{consola.description}</TableCell>
+
                 <TableCell>{consola.price}</TableCell>
-                <TableCell>{consola.image}</TableCell>
+                <TableCell>
+                  <Card sx={{ maxWidth: 345 }}>
+                    <CardMedia
+                      component="img"
+                      alt="Product Image"
+                      height="140"
+                      image={consola.image}
+                      sx={{ objectFit: 'cover' }}
+                    />
+                  </Card>
+                </TableCell>
                 <TableCell>{consola.stock}</TableCell>
                 <TableCell>{consola.reviews.length}</TableCell>
                 <TableCell>

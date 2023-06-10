@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
@@ -16,9 +16,7 @@ import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import Button from '@mui/material/Button'
 import Detail from './Detail'
-import axios from 'axios'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -62,36 +60,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-export default function NavBar() {
-  const pages = ['Listas', 'Reseñas']
-  const settings = ['Perfil', 'Dashboard', 'Cerrar Sesión']
+export default function NavBar(props) {
+  const { dataUser, setData } = props
+  const settings = ['Perfil', 'Dashboard', 'Listas', 'Reseñas', 'Cerrar Sesión']
 
-  const [dataUser, setData] = useState([])
-  const requestGet = async () => {
-    // Obtener los parámetros de consulta de la URL
-    const urlParams = new URLSearchParams(window.location.search)
-    // Obtener el valor del token
-    const token = urlParams.get('token')
-    // Obtener el valor del userId
-    const userId = urlParams.get('userId')
-
-    const baseUrl = 'http://localhost:3001/api/user'
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-
-    axios
-      .get(baseUrl + '/' + userId, config)
-      .then((res) => {
-        setData(res.data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [anchorElCart, setAnchorElCart] = React.useState(null)
@@ -118,35 +90,43 @@ export default function NavBar() {
     setAnchorElCart(null)
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await requestGet()
-    }
-
-    fetchData()
-  }, [])
-
   const handleMenuItemClick = (page) => {
     if (page === 'Listas') {
       const searchParams = new URLSearchParams(window.location.search)
       const token = searchParams.get('token')
-      window.location.href = `/Listas/?token=${token}`
+      const userId = searchParams.get('userId')
+
+      window.location.href = `/Listas/?token=${encodeURIComponent(
+        token
+      )}&userId=${encodeURIComponent(userId)}`
     }
     if (page === 'Reseñas') {
       const searchParams = new URLSearchParams(window.location.search)
       const token = searchParams.get('token')
-      window.location.href = `/Reseñas/?token=${token}`
+      const userId = searchParams.get('userId')
+
+      window.location.href = `/Reseñas/?token=${encodeURIComponent(
+        token
+      )}&userId=${encodeURIComponent(userId)}`
     }
     if (page === 'Dashboard') {
       const searchParams = new URLSearchParams(window.location.search)
       const token = searchParams.get('token')
-      window.location.href = `/Dashboard/?token=${token}`
+      const userId = searchParams.get('userId')
+
+      window.location.href = `/Dashboard/?token=${encodeURIComponent(
+        token
+      )}&userId=${encodeURIComponent(userId)}`
     }
 
     if (page === 'Perfil') {
       const searchParams = new URLSearchParams(window.location.search)
       const token = searchParams.get('token')
-      window.location.href = `/Perfil/?token=${token}`
+      const userId = searchParams.get('userId')
+
+      window.location.href = `/Perfil/?token=${encodeURIComponent(
+        token
+      )}&userId=${encodeURIComponent(userId)}`
     }
 
     if (page === 'Cerrar Sesión') {
@@ -205,11 +185,6 @@ export default function NavBar() {
               sx={{
                 display: { xs: 'block', md: 'none' },
               }}>
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={() => handleMenuItemClick(page)}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
               <MenuItem>
                 <Search>
                   <SearchIconWrapper>
@@ -242,14 +217,6 @@ export default function NavBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={() => handleMenuItemClick(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}>
-                {page}
-              </Button>
-            ))}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Search>
                 <SearchIconWrapper>
@@ -263,7 +230,7 @@ export default function NavBar() {
             </Box>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Revista tu carrito">
+            <Tooltip title="Revisa tu carrito">
               <IconButton
                 onClick={handleOpenUserCart}
                 aria-label="cart"
@@ -302,7 +269,7 @@ export default function NavBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Abrir configuraciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src={dataUser.avatar} />
               </IconButton>

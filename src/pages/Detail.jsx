@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -49,13 +49,14 @@ export default function Detail({ data, setData }) {
 
         if (productIndex !== -1) {
           updatedData.products[productIndex].quantity = newQuantity
-
-          setData({
-            ...data,
-            cart: {
-              ...data.cart,
-              list: updatedData,
-            },
+          setData((prevData) => {
+            return {
+              ...prevData,
+              cart: {
+                ...prevData.cart,
+                list: updatedData,
+              },
+            }
           })
         }
       })
