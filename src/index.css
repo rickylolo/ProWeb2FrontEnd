@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.Suelo{
+  border: #417217;
+  height: 150px;
+  width: 100%;
+  background-color: #587e37;
+  border: none;
+}
+
+.Fondo{
+  background-color: #a4b892;
+}
+
+.register-box{
+  border: 2px solid rgba(39, 112, 63, 0.651);
+  color: #000000;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+  height: 40%;
+  width: 25%;
+  background-color: #ffffff;
+  border-radius: 5%;
+
+}
