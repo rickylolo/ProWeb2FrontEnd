@@ -39,7 +39,7 @@ const Products = () => {
     cursor: 'pointer',
   })
 
-  const baseUrl = 'http://localhost:3001/api/product'
+  const baseUrl = 'https://proweb2-app.herokuapp.com/api/product'
 
   const [data, setData] = useState([])
   const [modalInsertar, setModalInsertar] = useState(false)
@@ -147,9 +147,7 @@ const Products = () => {
 
   const peticionPut = async (form) => {
     try {
-      const baseUrl = 'http://localhost:3001/api/product'
       const headers = { 'Content-Type': 'application/json' }
-
       const searchParams = new URLSearchParams(window.location.search)
 
       // Retrieve the JWT and User ID from the URL

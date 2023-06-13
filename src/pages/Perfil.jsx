@@ -68,7 +68,7 @@ export default function Profile(props) {
 
   const peticionPut = async (form) => {
     try {
-      const baseUrl = 'http://localhost:3001/api/user'
+      const baseUrl = 'https://proweb2-app.herokuapp.com/api/user'
       const headers = { 'Content-Type': 'application/json' }
       const searchParams = new URLSearchParams(window.location.search)
 

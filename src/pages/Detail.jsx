@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -8,12 +8,19 @@ import Fab from '@mui/material/Fab'
 import PaymentIcon from '@mui/icons-material/Payment'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
+import Modal from '@mui/material/Modal'
 import axios from 'axios'
 import IconButton from '@mui/material/IconButton'
 import RemoveIcon from '@mui/icons-material/Remove'
 import AddIcon from '@mui/icons-material/Add'
-
+import Checkout from './Checkout/Checkout'
 export default function Detail({ data, setData }) {
+  const [modalCheckout, setModalCheckout] = useState(false)
+
+  const abrirCerrarModalCheckout = () => {
+    setModalCheckout(!modalCheckout)
+  }
+
   const calculateTotal = () => {
     if (data) {
       return data?.products.reduce((total, item) => {
@@ -25,7 +32,7 @@ export default function Detail({ data, setData }) {
   }
 
   const handleQuantityChange = (itemId, newQuantity) => {
-    const baseUrl = 'http://localhost:3001/api/list'
+    const baseUrl = 'https://proweb2-app.herokuapp.com/api/list'
 
     const requestData = {
       product: itemId,
@@ -122,6 +129,10 @@ export default function Detail({ data, setData }) {
           </ListItem>
           <Divider />
         </List>
+
+        <Modal open={modalCheckout} onClose={abrirCerrarModalCheckout}>
+          <Checkout />
+        </Modal>
       </Box>
 
       {/* Botón "Realizar pago" */}
@@ -134,8 +145,15 @@ export default function Detail({ data, setData }) {
             marginTop: 1,
             marginBottom: 1,
           }}>
-          <Fab variant="extended" color="primary">
-            <PaymentIcon sx={{ marginRight: '8px' }} />
+          <Fab
+            variant="extended"
+            color="primary"
+            onClick={abrirCerrarModalCheckout}
+            sx={{
+              fontSize: 12, // Ajusta el tamaño de la fuente
+              padding: 3, // Ajusta el espacio alrededor del contenido
+            }}>
+            <PaymentIcon sx={{ marginRight: '4px' }} />
             Realizar pago
           </Fab>
         </Box>

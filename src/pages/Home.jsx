@@ -15,6 +15,7 @@ import {
 import { createTheme } from '@mui/material/styles'
 import axios from 'axios'
 import NavBar from './NavBar'
+
 import PageviewIcon from '@mui/icons-material/Pageview'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
@@ -57,7 +58,7 @@ export default function Home() {
     // Obtener el valor del userId
     const userId = urlParams.get('userId')
 
-    const baseUrl = 'http://localhost:3001/api/user'
+    const baseUrl = 'https://proweb2-app.herokuapp.com/api/user'
 
     const config = {
       headers: {
@@ -83,14 +84,14 @@ export default function Home() {
   }, [])
 
   const requestGetProducts = async () => {
-    const baseUrl = 'http://localhost:3001/api/product'
+    const baseUrl = 'https://proweb2-app.herokuapp.com/api/product'
     await axios.get(baseUrl).then((res) => {
       setDataProducts(res.data)
     })
   }
 
   const handleAddToCart = async (idProducto) => {
-    const baseUrl = 'http://localhost:3001/api/user/addCart'
+    const baseUrl = 'https://proweb2-app.herokuapp.com/api/user/addCart'
     // Obtener la URL actual
     const urlParams = new URLSearchParams(window.location.search)
 

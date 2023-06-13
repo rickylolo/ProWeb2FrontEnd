@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import granero from "./img/granero.png"
+import granero from './img/granero.png'
 
 function Copyright(props) {
   return (
@@ -77,7 +77,7 @@ export default function SignUp() {
 
   const peticionPost = async (form) => {
     try {
-      const baseUrl = 'http://localhost:3001/api/user'
+      const baseUrl = 'https://proweb2-app.herokuapp.com/api/user'
       const headers = { 'Content-Type': 'application/json' }
 
       await axios.post(baseUrl, JSON.stringify(form), {
@@ -95,8 +95,8 @@ export default function SignUp() {
   }
 
   return (
-    <section className='Fondo'>
-      <section className='register-box'>
+    <section className="Fondo">
+      <section className="register-box">
         <ThemeProvider theme={defaultTheme}>
           <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -185,21 +185,20 @@ export default function SignUp() {
                 </Grid>
               </Box>
             </Box>
-           <div><br /></div>
+            <div>
+              <br />
+            </div>
           </Container>
         </ThemeProvider>
       </section>
 
-    <br></br><br></br>
+      <br></br>
+      <br></br>
 
-    <div class="Granero">
-    <img src={granero} 
-    width="500" 
-    height="300" />
-    </div>
-    <div class="Suelo"></div>
-
-
+      <div class="Granero">
+        <img src={granero} width="500" height="300" />
+      </div>
+      <div class="Suelo"></div>
     </section>
   )
 }

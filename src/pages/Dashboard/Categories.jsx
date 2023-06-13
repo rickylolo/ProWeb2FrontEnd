@@ -36,7 +36,7 @@ function Categories() {
     cursor: 'pointer',
   })
 
-  const baseUrl = 'http://localhost:3001/api/category'
+  const baseUrl = 'https://proweb2-app.herokuapp.com/api/category'
 
   const [dataCategories, setData] = useState([])
   const [modalInsertar, setModalInsertar] = useState(false)
@@ -96,7 +96,7 @@ function Categories() {
 
   const peticionPost = async (form) => {
     try {
-      const baseUrl = 'http://localhost:3001/api/category'
+      const baseUrl = 'https://proweb2-app.herokuapp.com/api/category'
       const headers = { 'Content-Type': 'application/json' }
 
       await axios.post(baseUrl, JSON.stringify(form), {
@@ -119,7 +119,7 @@ function Categories() {
 
   const peticionPut = async (form) => {
     try {
-      const baseUrl = 'http://localhost:3001/api/category'
+      const baseUrl = 'https://proweb2-app.herokuapp.com/api/category'
       const headers = { 'Content-Type': 'application/json' }
 
       const searchParams = new URLSearchParams(window.location.search)
