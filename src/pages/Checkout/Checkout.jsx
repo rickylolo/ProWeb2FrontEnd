@@ -13,17 +13,6 @@ import AddressForm from './AddressForm'
 import PaymentForm from './PaymentForm'
 import Review from './Review'
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
-
 const steps = ['Dirección de envío', 'Datos de pago', 'Revise su pedido']
 
 function getStepContent(step) {
@@ -104,7 +93,6 @@ export default function Checkout() {
             </React.Fragment>
           )}
         </Paper>
-        <Copyright />
       </Container>
     </ThemeProvider>
   )

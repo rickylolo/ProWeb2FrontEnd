@@ -1,3 +1,13 @@
+# Proyecto Front Programacion Web 2
+
+## Integrantes del equipo
+
+Ricardo Alberto Grimaldo Estévez 1868520
+Victor Baez Miranda 1719826
+David Alberto Guzmán Iracheta 1740385
+Aida Elizabeth Cipriano Romo 1989995
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
