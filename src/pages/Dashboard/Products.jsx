@@ -12,6 +12,7 @@ import {
   Card,
   CardMedia,
   TextField,
+  TablePagination,
   Box,
   Input,
 } from '@mui/material'
@@ -53,13 +54,18 @@ const Products = () => {
     stock: '',
   })
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setConsolaSeleccionada((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
   }
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 5))
+    setPage(0)
+  }
+
+  const slicedData = data.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
 
   const handleSubmitRegister = async (event) => {
     event.preventDefault()
@@ -86,12 +92,14 @@ const Products = () => {
     const data = objectFromFormData(formData)
 
     const imageFile = formData.get('image')
-    if (!imageFile) {
-      console.log('Falta cargar la imagen')
-      return
+    if (imageFile) {
+      const base64 = await convertBase64(imageFile)
+      data.image = base64
     }
-    const base64 = await convertBase64(imageFile)
-    data.image = base64
+
+    if (imageFile.name == '') {
+      delete data.image
+    }
 
     const urlParams = new URLSearchParams(window.location.search)
     const userId = urlParams.get('userId')
@@ -117,7 +125,9 @@ const Products = () => {
   function objectFromFormData(formData) {
     const obj = {}
     formData.forEach((value, key) => {
-      obj[key] = value
+      if (value) {
+        obj[key] = value
+      }
     })
     return obj
   }
@@ -134,23 +144,35 @@ const Products = () => {
       abrirCerrarModalInsertar()
     })
   }
-  const peticionPut = async () => {
-    await axios
-      .put(baseUrl + '/' + consolaSeleccionada._id, consolaSeleccionada)
-      .then((response) => {
-        var dataNueva = data.map((consola) => {
-          if (consolaSeleccionada._id === consola._id) {
-            consola.name = consolaSeleccionada.name
-            consola.description = consolaSeleccionada.description
-            consola.price = consolaSeleccionada.price
-            consola.image = consolaSeleccionada.image
-            consola.stock = consolaSeleccionada.stock
-          }
-          return consola // Devuelve el objeto modificado o sin modificar
-        })
-        setData(dataNueva)
-        abrirCerrarModalEditar()
-      })
+
+  const peticionPut = async (form) => {
+    try {
+      const baseUrl = 'http://localhost:3001/api/product'
+      const headers = { 'Content-Type': 'application/json' }
+
+      const searchParams = new URLSearchParams(window.location.search)
+
+      // Retrieve the JWT and User ID from the URL
+      const token = searchParams.get('token')
+
+      await axios.put(
+        baseUrl + '/' + consolaSeleccionada._id,
+        JSON.stringify(form),
+        {
+          headers,
+        }
+      )
+      requestGet()
+      abrirCerrarModalEditar()
+    } catch (error) {
+      if (error.response) {
+      } else if (error.request) {
+        console.log(error.request)
+      } else {
+        console.log('Error', error.message)
+      }
+      console.log(error.config)
+    }
   }
 
   const peticionDelete = async () => {
@@ -272,7 +294,7 @@ const Products = () => {
           margin="dense"
           name="name"
           label="Nombre"
-          value={consolaSeleccionada && consolaSeleccionada.name}
+          defaultValue={consolaSeleccionada && consolaSeleccionada.name}
         />
 
         <TextField
@@ -283,7 +305,7 @@ const Products = () => {
           rows={4}
           name="description"
           label="Descripción"
-          value={consolaSeleccionada && consolaSeleccionada.description}
+          defaultValue={consolaSeleccionada && consolaSeleccionada.description}
         />
 
         <TextField
@@ -292,11 +314,10 @@ const Products = () => {
           margin="dense"
           name="price"
           label="Precio"
-          value={consolaSeleccionada && consolaSeleccionada.price}
+          defaultValue={consolaSeleccionada && consolaSeleccionada.price}
         />
 
         <Input
-          required
           type="file"
           margin="dense"
           accept="image/jpeg"
@@ -312,7 +333,7 @@ const Products = () => {
           margin="dense"
           name="stock"
           label="Stock"
-          value={consolaSeleccionada && consolaSeleccionada.stock}
+          defaultValue={consolaSeleccionada && consolaSeleccionada.stock}
         />
 
         <Box
@@ -321,7 +342,7 @@ const Products = () => {
             justifyContent: 'flex-end',
             paddingTop: '20px',
           }}>
-          <Button color="primary" onClick={() => peticionPut()}>
+          <Button color="primary" type="submit">
             Actualizar
           </Button>
           <Button color="inherit" onClick={() => abrirCerrarModalEditar()}>
@@ -380,7 +401,7 @@ const Products = () => {
           </TableHead>
 
           <TableBody>
-            {data.map((consola) => (
+            {slicedData.map((consola) => (
               <TableRow key={consola._id}>
                 <TableCell>{consola.name}</TableCell>
                 <TableCell>{consola.description}</TableCell>
@@ -415,7 +436,15 @@ const Products = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <Modal open={modalInsertar} onClose={abrirCerrarModalInsertar}>
         {bodyInsertar}
       </Modal>

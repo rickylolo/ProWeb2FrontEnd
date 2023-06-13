@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
@@ -17,8 +17,13 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Detail from './Detail'
+
 import pollito from "./img/pollito.avif"
 
+
+
+import Modal from '@mui/material/Modal'
+import Perfil from './Perfil'
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -70,6 +75,8 @@ export default function NavBar(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [anchorElCart, setAnchorElCart] = React.useState(null)
+  const [modalPerfil, setModalPerfil] = useState(false)
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
   }
@@ -91,6 +98,10 @@ export default function NavBar(props) {
 
   const handleCloseUserCart = () => {
     setAnchorElCart(null)
+  }
+
+  const abrirCerrarModalPerfil = () => {
+    setModalPerfil(!modalPerfil)
   }
 
   const handleMenuItemClick = (page) => {
@@ -123,13 +134,7 @@ export default function NavBar(props) {
     }
 
     if (page === 'Perfil') {
-      const searchParams = new URLSearchParams(window.location.search)
-      const token = searchParams.get('token')
-      const userId = searchParams.get('userId')
-
-      window.location.href = `/Perfil/?token=${encodeURIComponent(
-        token
-      )}&userId=${encodeURIComponent(userId)}`
+      abrirCerrarModalPerfil()
     }
 
     if (page === 'Cerrar Sesión') {
@@ -289,6 +294,11 @@ export default function NavBar(props) {
           </Box>
         </Toolbar>
       </Container>
+      <Modal open={modalPerfil} onClose={abrirCerrarModalPerfil}>
+        <Box>
+          <Perfil dataUser={dataUser} setDataUser={setData} />
+        </Box>
+      </Modal>
     </AppBar>
   )
 }

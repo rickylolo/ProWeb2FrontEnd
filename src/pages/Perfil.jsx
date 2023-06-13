@@ -1,55 +1,46 @@
 import * as React from 'react'
 import Avatar from '@mui/material/Avatar'
 import axios from 'axios'
+import Input from '@mui/material/Input'
 import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
-import Link from '@mui/material/Link'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
-import Input from '@mui/material/Input'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import granero from "./img/granero.png"
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}>
-      {'Copyright © '}
-
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
-
+import { styled } from '@mui/system'
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme()
 
-export default function SignUp() {
+export default function Profile(props) {
+  const { dataUser, setDataUser } = props
+  const Modales = styled('div')({
+    position: 'absolute',
+    backgroundColor: 'white',
+    borderRadius: '1rem',
+    boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.2)',
+    padding: '16px 32px 24px',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    justifyContent: 'center',
+  })
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const data = objectFromFormData(formData)
 
     const avatarFile = formData.get('avatar')
-    if (!avatarFile) {
-      console.log('Falta cargar la imagen')
-      return
+    if (avatarFile) {
+      const base64 = await convertBase64(avatarFile)
+      data.avatar = base64
     }
-
-    const base64 = await convertBase64(avatarFile)
-    data.avatar = base64
-    data.userType = 2
-    console.log(data)
-    peticionPost(data)
+    if (avatarFile.name == '') {
+      delete data.avatar
+    }
+    peticionPut(data)
   }
 
   const convertBase64 = (file) => {
@@ -75,14 +66,24 @@ export default function SignUp() {
     return obj
   }
 
-  const peticionPost = async (form) => {
+  const peticionPut = async (form) => {
     try {
       const baseUrl = 'http://localhost:3001/api/user'
       const headers = { 'Content-Type': 'application/json' }
+      const searchParams = new URLSearchParams(window.location.search)
 
-      await axios.post(baseUrl, JSON.stringify(form), {
+      const token = searchParams.get('token')
+      const userId = searchParams.get('userId')
+
+      await axios.put(baseUrl + '/' + userId, JSON.stringify(form), {
         headers,
       })
+      setDataUser((prevDataUser) => ({
+        ...prevDataUser,
+        ...form, // Asignar los nuevos valores del formulario
+      }))
+
+      console.log(dataUser)
     } catch (error) {
       if (error.response) {
       } else if (error.request) {
@@ -95,88 +96,82 @@ export default function SignUp() {
   }
 
   return (
-    <section className='Fondo'>
-      <section className='register-box'>
-        <ThemeProvider theme={defaultTheme}>
-          <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <Box
-              sx={{
-                marginTop: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-              }}>
-              <Typography component="h1" variant="h5">
-                Tu perfil
-              </Typography>
-              <Avatar
-               src="img/temp.png"
-               sx={{ width: 112, height: 112, m: 4 }}
-              />
-              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      autoComplete="given-name"
-                      name="firstName"
-                      InputProps={{ readOnly: true,}}
-                      fullWidth
-                      id="firstName"
-                      label="Nombre(s)"
-                      autoFocus
-                      defaultValue="Nombre"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      InputProps={{ readOnly: true,}}
-                      id="lastName"
-                      label="Apellido(s)"
-                      name="lastName"
-                      autoComplete="family-name"
-                      defaultValue="Apellidos"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      InputProps={{ readOnly: true,}}
-                      id="email"
-                      label="Correo electrónico"
-                      name="email"
-                      autoComplete="email"
-                      defaultValue="Correo"
-                    />
-                  </Grid>
+    <Modales>
+      <ThemeProvider theme={defaultTheme}>
+        <Container component="main" maxWidth="xs">
+          {/* Rest of your code */}
+          <Box
+            sx={{
+              marginTop: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}>
+            {/* Avatar and form */}
+            <Avatar
+              src={dataUser.avatar}
+              sx={{ width: 112, height: 112, m: 4 }}
+            />
+
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <Grid container spacing={4}>
+                <Grid item xs={12}>
+                  <Input
+                    type="file"
+                    accept="image/jpeg"
+                    name="avatar"
+                    id="avatar"
+                    inputProps={{ 'aria-label': 'Avatar' }}
+                    fullWidth
+                  />
                 </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}>
-                  Editar tu perfil
-                </Button>
-                <Grid container justifyContent="flex-end">
+
+                {/* First name */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    autoComplete="given-name"
+                    name="firstName"
+                    fullWidth
+                    id="firstName"
+                    label="Nombre(s)"
+                    autoFocus
+                    defaultValue={dataUser.firstName}
+                  />
                 </Grid>
-              </Box>
+                {/* Last name */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="lastName"
+                    label="Apellido(s)"
+                    name="lastName"
+                    autoComplete="family-name"
+                    defaultValue={dataUser.lastName}
+                  />
+                </Grid>
+                {/* Email */}
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="email"
+                    label="Correo electrónico"
+                    name="email"
+                    autoComplete="email"
+                    defaultValue={dataUser.email}
+                  />
+                </Grid>
+              </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}>
+                Actualizar Perfil
+              </Button>
             </Box>
-           <div><br /></div>
-          </Container>
-        </ThemeProvider>
-      </section>
-
-    <br></br><br></br>
-
-    <div class="Granero">
-    <img src={granero} 
-    width="500" 
-    height="300" />
-    </div>
-    <div class="Suelo"></div>
-
-
-    </section>
+          </Box>
+        </Container>
+      </ThemeProvider>
+    </Modales>
   )
 }

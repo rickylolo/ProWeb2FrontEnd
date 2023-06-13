@@ -9,6 +9,7 @@ import {
   TableRow,
   Modal,
   Button,
+  TablePagination,
   TextField,
   Box,
 } from '@mui/material'
@@ -41,6 +42,22 @@ function Categories() {
   const [modalInsertar, setModalInsertar] = useState(false)
   const [modalEditar, setModalEditar] = useState(false)
   const [modalEliminar, setModalEliminar] = useState(false)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
+  const slicedData = dataCategories.slice(
+    page * rowsPerPage,
+    (page + 1) * rowsPerPage
+  )
 
   const initialState = {
     name: '',
@@ -56,12 +73,11 @@ function Categories() {
     peticionPost(data)
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setConsolaSeleccionada((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
+  const handleSubmitUpdate = (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const data = objectFromFormData(formData)
+    peticionPut(data)
   }
 
   function objectFromFormData(formData) {
@@ -101,21 +117,35 @@ function Categories() {
     }
   }
 
-  const peticionPut = async () => {
-    await axios
-      .put(baseUrl + '/' + consolaSeleccionada._id, consolaSeleccionada)
-      .then((res) => {
-        var dataNueva = dataCategories
-        dataNueva = dataNueva.map((consola) => {
-          if (consolaSeleccionada._id === consola._id) {
-            consola.name = consolaSeleccionada.name
-            consola.description = consolaSeleccionada.description
-          }
-          return consola
-        })
-        setData(dataNueva)
-        abrirCerrarModalEditar()
-      })
+  const peticionPut = async (form) => {
+    try {
+      const baseUrl = 'http://localhost:3001/api/category'
+      const headers = { 'Content-Type': 'application/json' }
+
+      const searchParams = new URLSearchParams(window.location.search)
+
+      // Retrieve the JWT and User ID from the URL
+      const token = searchParams.get('token')
+      const id = searchParams.get('userId')
+
+      await axios.put(
+        baseUrl + '/' + consolaSeleccionada._id,
+        JSON.stringify(form),
+        {
+          headers,
+        }
+      )
+      requestGet()
+      abrirCerrarModalEditar()
+    } catch (error) {
+      if (error.response) {
+      } else if (error.request) {
+        console.log(error.request)
+      } else {
+        console.log('Error', error.message)
+      }
+      console.log(error.config)
+    }
   }
 
   const peticionDelete = async () => {
@@ -195,7 +225,7 @@ function Categories() {
   )
 
   const bodyEditar = (
-    <Box>
+    <Box component="form" onSubmit={handleSubmitUpdate}>
       <Modales>
         <h3>Editar Categoría</h3>
         <TextField
@@ -203,8 +233,7 @@ function Categories() {
           margin="dense"
           name="name"
           label="Nombre"
-          onChange={handleChange}
-          value={consolaSeleccionada && consolaSeleccionada.name}
+          defaultValue={consolaSeleccionada && consolaSeleccionada.name}
         />
 
         <TextField
@@ -214,8 +243,7 @@ function Categories() {
           margin="dense"
           name="description"
           label="Descripción"
-          onChange={handleChange}
-          value={consolaSeleccionada && consolaSeleccionada.description}
+          defaultValue={consolaSeleccionada && consolaSeleccionada.description}
         />
 
         <Box
@@ -224,7 +252,7 @@ function Categories() {
             justifyContent: 'flex-end',
             paddingTop: '20px',
           }}>
-          <Button color="primary" onClick={() => peticionPut()}>
+          <Button color="primary" type="submit">
             Actualizar
           </Button>
           <Button color="inherit" onClick={() => abrirCerrarModalEditar()}>
@@ -272,7 +300,7 @@ function Categories() {
           </TableHead>
 
           <TableBody>
-            {dataCategories.map((consola) => (
+            {slicedData.map((consola) => (
               <TableRow key={consola._id}>
                 <TableCell>{consola.name}</TableCell>
                 <TableCell>{consola.description}</TableCell>
@@ -293,7 +321,15 @@ function Categories() {
           </TableBody>
         </Table>
       </TableContainer>
-
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={dataCategories.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <Modal open={modalInsertar} onClose={abrirCerrarModalInsertar}>
         {bodyInsertar}
       </Modal>
