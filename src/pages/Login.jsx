@@ -16,7 +16,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import axios from 'axios'
-import granja from "./img/granjalogin.avif"
+import granja from './img/granjalogin.avif'
 
 function Copyright(props) {
   return (
@@ -53,6 +53,8 @@ export default function SignInSide() {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const data = objectFromFormData(formData)
+    console.log(data)
+
     requestLogin(data)
   }
 
@@ -66,7 +68,6 @@ export default function SignInSide() {
       })
 
       setData(response.data)
-      console.log(data)
 
       if (response.data.JSONWToken) {
         const token = response.data.JSONWToken
@@ -99,8 +100,7 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: `url(${granja})`
-              ,
+            backgroundImage: `url(${granja})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light'

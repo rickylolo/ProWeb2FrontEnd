@@ -13,25 +13,11 @@ import Badge from '@mui/material/Badge'
 import Container from '@mui/material/Container'
 import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import NotificationsIcon from '@mui/icons-material/Notifications'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import { mainListItems } from './listItems'
 import MainDashboard from './MainDashboard'
 import Products from './Products'
 import Categories from './Categories'
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}>
-      {'Copyright © '}
-
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
 
 const drawerWidth = 240
 
@@ -88,6 +74,15 @@ export default function Dashboard() {
     setOpen(!open)
   }
 
+  const redirectHome = () => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const token = searchParams.get('token')
+    const userId = searchParams.get('userId')
+
+    window.location.href = `/Home/?token=${encodeURIComponent(
+      token
+    )}&userId=${encodeURIComponent(userId)}`
+  }
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -116,10 +111,8 @@ export default function Dashboard() {
               sx={{ flexGrow: 1 }}>
               Dashboard
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton color="inherit" onClick={redirectHome}>
+              <ExitToAppIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
