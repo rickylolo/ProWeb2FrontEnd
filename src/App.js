@@ -10,6 +10,7 @@ import PerfilE from './pages/PerfilE'
 import Reviews from './pages/Reviews'
 import Lists from './pages/Lists'
 import Product from './pages/Lists'
+import DashboardP from './pages/Dashboard/Products'
 
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
           <Route path="/perfil" element={<Perfil />}></Route>
           <Route path="/perfile" element={<PerfilE />}></Route>
           <Route path="/reviews" element={<Reviews />}></Route>
-          <Route path="/product" element={<Products />}></Route>
+          <Route path="/product" element={<Product />}></Route>
+          <Route path="/dashboardP" element={<DashboardP />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
