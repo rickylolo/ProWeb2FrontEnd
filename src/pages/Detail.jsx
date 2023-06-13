@@ -131,7 +131,9 @@ export default function Detail({ data, setData }) {
         </List>
 
         <Modal open={modalCheckout} onClose={abrirCerrarModalCheckout}>
-          <Checkout />
+          <Box>
+            <Checkout />
+          </Box>
         </Modal>
       </Box>
 

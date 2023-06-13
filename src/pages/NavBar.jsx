@@ -7,7 +7,6 @@ import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import AdbIcon from '@mui/icons-material/Adb'
 import SearchIcon from '@mui/icons-material/Search'
 import AppBar from '@mui/material/AppBar'
 import InputBase from '@mui/material/InputBase'
@@ -18,13 +17,10 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Detail from './Detail'
 
-import pollito from "./img/pollito.avif"
-
-
+import pollito from './img/pollito.avif'
 
 import Modal from '@mui/material/Modal'
 import Perfil from './Perfil'
-
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -147,11 +143,9 @@ export default function NavBar(props) {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl" className='navegador' >
+      <Container maxWidth="xl" className="navegador">
         <Toolbar disableGutters>
-          <img src={pollito } 
-              width="40" 
-              height="40" />
+          <img src={pollito} width="40" height="40" alt="pollito" />
           <Typography
             variant="h6"
             noWrap
@@ -165,7 +159,7 @@ export default function NavBar(props) {
               color: 'inherit',
               textDecoration: 'none',
             }}>
-             &nbsp; La Granja del Poliito
+            &nbsp; La Granja del Pollito
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -208,8 +202,7 @@ export default function NavBar(props) {
               </MenuItem>
             </Menu>
           </Box>
-          
- 
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Search>

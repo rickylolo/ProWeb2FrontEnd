@@ -18,11 +18,8 @@ import NavBar from './NavBar'
 
 import PageviewIcon from '@mui/icons-material/Pageview'
 import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import granero from "./img/granero.png"
 
+import granero from './img/granero.png'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -115,10 +112,10 @@ export default function Home() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-      <main className='Fondo' >
+      <main className="Fondo">
         {/* Hero unit */}
         <NavBar dataUser={dataUser} setData={setDataUser} />
-        <Container sx={{ py: 8 }} maxWidth="md" className='Fondo_container'>
+        <Container sx={{ py: 8 }} maxWidth="md" className="Fondo_container">
           {/* End hero unit */}
 
           <Grid container spacing={4}>
@@ -196,14 +193,13 @@ export default function Home() {
         </Container>
       </main>
       {/* Footer */}
-      <Box className='Fondo' component="footer">
-      <div class="Granero">
-        <img src={granero} 
-        width="500" 
-        height="300" />
-        </div>
-        <div class="Suelo"></div>
-
+      <Box component="footer">
+        <Box className="Fondo">
+          <Box className="Granero">
+            <img src={granero} width="500" height="300" alt="granero" />
+          </Box>
+          <Box className="Suelo"></Box>
+        </Box>
       </Box>
 
       {/* End footer */}
