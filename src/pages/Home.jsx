@@ -19,19 +19,10 @@ import NavBar from './NavBar'
 import PageviewIcon from '@mui/icons-material/Pageview'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import granero from "./img/granero.png"
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -123,9 +114,13 @@ export default function Home() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <main>
+
+      <main className='Fondo' >
+        {/* Hero unit */}
         <NavBar dataUser={dataUser} setData={setDataUser} />
-        <Container sx={{ py: 8 }} maxWidth="md">
+        <Container sx={{ py: 8 }} maxWidth="md" className='Fondo_container'>
+          {/* End hero unit */}
+
           <Grid container spacing={4}>
             {loading // Se verifica si se está cargando la data
               ? // Si se está cargando, se muestra el skeleton
@@ -201,18 +196,14 @@ export default function Home() {
         </Container>
       </main>
       {/* Footer */}
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p">
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
+      <Box className='Fondo' component="footer">
+      <div class="Granero">
+        <img src={granero} 
+        width="500" 
+        height="300" />
+        </div>
+        <div class="Suelo"></div>
+
       </Box>
 
       {/* End footer */}
