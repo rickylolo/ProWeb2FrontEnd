@@ -96,7 +96,7 @@ export default function NavBar(props) {
       const token = searchParams.get('token')
       const userId = searchParams.get('userId')
 
-      window.location.href = `/Listas/?token=${encodeURIComponent(
+      window.location.href = `/Lists/?token=${encodeURIComponent(
         token
       )}&userId=${encodeURIComponent(userId)}`
     }
@@ -105,7 +105,7 @@ export default function NavBar(props) {
       const token = searchParams.get('token')
       const userId = searchParams.get('userId')
 
-      window.location.href = `/Reseñas/?token=${encodeURIComponent(
+      window.location.href = `/Reviews/?token=${encodeURIComponent(
         token
       )}&userId=${encodeURIComponent(userId)}`
     }
