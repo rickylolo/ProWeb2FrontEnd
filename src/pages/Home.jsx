@@ -115,10 +115,10 @@ export default function Home() {
       <main className="Fondo">
         {/* Hero unit */}
         <NavBar dataUser={dataUser} setData={setDataUser} />
-        <Container sx={{ py: 8 }} maxWidth="md" className="Fondo_container">
+        <div  className="Fondo_container">
           {/* End hero unit */}
-
-          <Grid container spacing={4}>
+          <div className="Container">
+          <Grid container spacing={4} >
             {loading // Se verifica si se está cargando la data
               ? // Si se está cargando, se muestra el skeleton
                 Array.from(Array(9).keys()).map((index) => (
@@ -190,17 +190,18 @@ export default function Home() {
                   </Grid>
                 ))}
           </Grid>
-        </Container>
+          </div>
+        </div>
       </main>
       {/* Footer */}
-      <Box component="footer">
+      <div >
         <Box className="Fondo">
           <Box className="Granero">
             <img src={granero} width="500" height="300" alt="granero" />
           </Box>
           <Box className="Suelo"></Box>
         </Box>
-      </Box>
+      </div>
 
       {/* End footer */}
     </ThemeProvider>

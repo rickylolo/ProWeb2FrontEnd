@@ -142,7 +142,7 @@ export default function NavBar(props) {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="static"  className="navegador">
       <Container maxWidth="xl" className="navegador">
         <Toolbar disableGutters>
           <img src={pollito} width="40" height="40" alt="pollito" />
